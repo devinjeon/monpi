@@ -10,7 +10,7 @@ Monpi is my first game project and an output from one of the onboarding processe
 
 At that time, I had never experienced something like game design, game development process and Unity. Even though it was a just small project during the short period, it helped me to understand how we create a game, and to settle in the game development company.
 
-## How to enjoy
+## How to play
 
 *At least, I couldn't see anyone cleared all stages(total 10 stages)*
 
