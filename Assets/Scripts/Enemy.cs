@@ -100,4 +100,19 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag != "Player")
+            return;
+
+        bool canCollide = other.GetComponent<PlayerController>().CanCollide;
+        if (canCollide == true) {
+            Instantiate(explosionEffect,
+                    gameObject.transform.position,
+                    gameObject.transform.rotation
+            );
+            Destroy(gameObject);
+        }
+    }
 }

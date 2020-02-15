@@ -17,6 +17,12 @@ public class PlayerController : MonoBehaviour
     public float cameraMinX, cameraMaxX, cameraMinZ, cameraMaxZ;
     public float startZ;
     private Quaternion newRotation;
+    private bool canCollide;
+    public bool CanCollide
+    {
+        get { return canCollide; }
+    }
+    public GameObject explosionEffect;
 
     void Start()
     {
@@ -28,9 +34,9 @@ public class PlayerController : MonoBehaviour
         newCameraPosition = Camera.main.transform.position;
         isMoving = false;
         gameController.Lock();
+        canCollide = false;
 
         speed = 0;
-
     }
 
     void Update()
@@ -159,6 +165,21 @@ public class PlayerController : MonoBehaviour
             gameController.Lock();
             SetPositionAtClearTime();
         }
+
+        // Make player to be safe within the safezone
+        if (other.tag == "SafeZone")
+            canCollide = false;
+
+        // Gameover if player collide a monster outside of safezone
+        if (canCollide == true)
+        {
+            Instantiate(explosionEffect,
+                    gameObject.transform.position,
+                    gameObject.transform.rotation
+            );
+            gameController.GameOver(false);
+            Destroy(gameObject);
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -167,6 +188,7 @@ public class PlayerController : MonoBehaviour
             other == gameController.GetCurrentStartZoneCollider())
         {
             timeController.StartCountDown();
+            canCollide = true;
         }
     }
 }
