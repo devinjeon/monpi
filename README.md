@@ -14,7 +14,7 @@ At that time, I had never experienced something like game design, game developme
 
 *At least, I couldn't see anyone cleared all stages(total 10 stages)*
 
-* **Right click to move units**(just like StarCraft)
+* **Right click to move your unit**(just like StarCraft)
 * **Dodge the monsters and head upwards to reach the white circle destination**
 * You will be given bonus time on each stage. The faster you reach within bonus time, the more score you get.
 * You can't play this game on mobile or some browsers because it's built on WebGL
