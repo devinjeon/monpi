@@ -120,8 +120,8 @@ public class GameController : MonoBehaviour
         DestroyEnemies();
         currentStage += 1;
         UpdateStageText();
-        timeController.SetTimeCount(stageLimitTimeList[currentStage - 1]);
-        timeController.Reset();
+        timeController.Reset(stageLimitTimeList[currentStage - 1]);
+
         endZone = CreateSafeZone();
 
         for (int i = 0; i < enemyCountList[currentStage - 1]; i++)

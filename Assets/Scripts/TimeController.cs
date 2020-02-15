@@ -5,24 +5,18 @@ using UnityEngine;
 public class TimeController : MonoBehaviour
 {
     public UnityEngine.UI.Text timeText;
-    public float timeStart;
-    private float timeLeft;
+    private float time;
     private bool isStopped;
-
-    void Start()
-    {
-        Reset();
-    }
 
     void Update()
     {
         if (isStopped == false)
         {
-            timeLeft -= Time.deltaTime;
-            if (timeLeft <= 0)
+            time -= Time.deltaTime;
+            if (time <= 0)
             {
                 StopCountDown();
-                timeLeft = 0;
+                time = 0;
             }
             UpdateText();
         }
@@ -30,7 +24,7 @@ public class TimeController : MonoBehaviour
 
     public float GetTimeLeft()
     {
-        return timeLeft;
+        return time;
     }
 
     public void StartCountDown()
@@ -43,20 +37,15 @@ public class TimeController : MonoBehaviour
         isStopped = true;
     }
 
-    public void SetTimeCount(float second)
-    {
-        timeStart = second;
-    }
-
-    public void Reset()
+    public void Reset(float t)
     {
         StopCountDown();
-        timeLeft = timeStart;
+        time = t;
         UpdateText();
     }
 
     public void UpdateText()
     {
-        timeText.text = timeLeft.ToString("0.00");
+        timeText.text = time.ToString("0.00");
     }
 }
