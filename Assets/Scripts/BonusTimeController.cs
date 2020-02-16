@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimeController : MonoBehaviour
+public class BonusTimeController : MonoBehaviour
 {
     public UnityEngine.UI.Text timeText;
     private float time;

@@ -7,7 +7,6 @@ public class GameController : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject player;
     public Vector3 playerStartPosition;
-    private TimeController timeController;
     public List<GameObject> enemyList;
     public List<int> enemyCountList;
     public List<float> stageLimitTimeList;
@@ -30,6 +29,7 @@ public class GameController : MonoBehaviour
     private int highestScore = 0;
 
     private bool isLocked;
+    public BonusTimeController bonusTimeController;
 
     void Awake()
     {
@@ -39,8 +39,6 @@ public class GameController : MonoBehaviour
     void Start()
     {
         // GameStatus GUI
-        timeController = GameObject.FindGameObjectWithTag("TimeController").
-            GetComponent<TimeController>();
         stageText = GameObject.FindGameObjectWithTag("StageText").
             GetComponent<UnityEngine.UI.Text>();
         scorePrefix = GameObject.FindGameObjectWithTag("ScorePrefix").
@@ -51,7 +49,6 @@ public class GameController : MonoBehaviour
             GetComponent<UnityEngine.UI.Text>();
         timeTitle = GameObject.FindGameObjectWithTag("TimeTitle").
             GetComponent<UnityEngine.UI.Text>();
-
         // GameOver GUI
         gameOverTitle = GameObject.FindGameObjectWithTag("GameOverTitle").
             GetComponent<UnityEngine.UI.Text>();
@@ -78,7 +75,7 @@ public class GameController : MonoBehaviour
         stageText.enabled = show;
         scorePrefix.enabled = show;
         scoreText.enabled = show;
-        timeController.enabled = show;
+        bonusTimeController.enabled = show;
         timeText.enabled = show;
         timeTitle.enabled = show;
     }
@@ -120,12 +117,12 @@ public class GameController : MonoBehaviour
         DestroyEnemies();
         currentStage += 1;
         UpdateStageText();
-        timeController.Reset(stageLimitTimeList[currentStage - 1]);
 
         endZone = CreateSafeZone();
 
         for (int i = 0; i < enemyCountList[currentStage - 1]; i++)
             SpawnOneEnemy(enemyList[currentStage - 1]);
+        bonusTimeController.Reset(bonusTimesForEachStage[currentStage - 1]);
     }
 
     private void DestroyEnemies()
@@ -159,7 +156,7 @@ public class GameController : MonoBehaviour
 
     private int GetBonusScore(float playTime)
     {
-        float remainingTime = timeController.GetTimeLeft();
+        float remainingTime = bonusTimeController.GetTimeLeft();
         float bonusRate = (float)remainingTime / (float)stageLimitTimeList[currentStage - 1];
         int bonusScore = (int)((float)stageScoreList[currentStage - 1] * bonusRate);
         return bonusScore;
@@ -197,7 +194,7 @@ public class GameController : MonoBehaviour
 
     public void GameOver(bool isCleared)
     {
-        timeController.StopCountDown();
+        bonusTimeController.StopCountDown();
         UpdateFinalScore();
         gameOverTitle.enabled = !isCleared;
         clearTitle.enabled = isCleared;
@@ -208,8 +205,8 @@ public class GameController : MonoBehaviour
     {
         if (currentStage < enemyList.Count)
         {
-            timeController.StopCountDown();
-            float remainingTime = timeController.GetTimeLeft();
+            bonusTimeController.StopCountDown();
+            float remainingTime = bonusTimeController.GetTimeLeft();
             AddScore(stageScoreList[currentStage - 1]);
             AddScore(GetBonusScore(remainingTime));
             UpdateScoreText();

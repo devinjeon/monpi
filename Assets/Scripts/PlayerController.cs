@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private TimeController timeController;
+    private BonusTimeController bonusTimeController;
     private GameController gameController;
     public GameObject mouseClickEffect;
     private const int RIGHT_MOUSE_BUTTON = 1;
@@ -26,10 +26,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        timeController = GameObject.FindGameObjectWithTag("TimeController").
-            GetComponent<TimeController>();
         gameController = GameObject.FindGameObjectWithTag("GameController").
             GetComponent<GameController>();
+        bonusTimeController = gameController.bonusTimeController;
         newPosition = transform.position;
         newCameraPosition = Camera.main.transform.position;
         isMoving = false;
@@ -187,7 +186,7 @@ public class PlayerController : MonoBehaviour
         if (other.tag == "SafeZone" &&
             other == gameController.GetCurrentStartZoneCollider())
         {
-            timeController.StartCountDown();
+            bonusTimeController.StartCountDown();
             canCollide = true;
         }
     }
