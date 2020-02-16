@@ -1,24 +1,32 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Monpi</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <script src="TemplateData/UnityProgress.js"></script>
-    <script src="Build/UnityLoader.js"></script>
-    <script>
-      var gameInstance = UnityLoader.instantiate("gameContainer", "Build/monpi-0.1.1.json", {onProgress: UnityProgress});
-    </script>
-  </head>
-  <body>
-    <div class="webgl-content">
-      <div id="gameContainer" style="width: 512px; height: 512px"></div>
-      <div class="footer">
-        <div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
-        <div class="title">Monpi - <a href="https://github.com/DevinJeon/monpi">Source codes</a></div>
-      </div>
+<html lang="en-us" oncontextmenu="return false;">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Monpi</title>
+  <link href="https://fonts.googleapis.com/css?family=Audiowide|Rajdhani&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <script src="TemplateData/UnityProgress.js"></script>
+  <script src="Build/UnityLoader.js"></script>
+  <script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "Build/monpi-0.1.1.json", { onProgress: UnityProgress });
+  </script>
+</head>
+
+<body>
+  <div class="webgl-content">
+    <div class="header">
+      <div class="title">Monpi</div>
+      <div class="source"> <a href="https://github.com/DevinJeon/monpi"> https://github.com/DevinJeon/monpi </a> </div>
     </div>
-  </body>
+    <div id="gameContainer"></div>
+    <div class="footer">
+      <div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
+      <div class="fullscreen-guide">Fullscreen</div>
+    </div>
+  </div>
+</body>
+
 </html>

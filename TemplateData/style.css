@@ -1,5 +1,7 @@
+body {background-color: #231F20; color: #E6E6E6;}
 .webgl-content * {border: 0; margin: 0; padding: 0}
 .webgl-content {position: absolute; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);}
+.webgl-content #gameContainer {width: 512px; height: 512px;}
 
 .webgl-content .logo, .progress {position: absolute; left: 50%; top: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);}
 .webgl-content .logo {background: url('progressLogo.Light.png') no-repeat center / contain; width: 154px; height: 130px;}
@@ -11,8 +13,13 @@
 .webgl-content .progress.Dark .empty {background-image: url('progressEmpty.Dark.png');}
 .webgl-content .progress.Dark .full {background-image: url('progressFull.Dark.png');}
 
-.webgl-content .footer {margin-top: 5px; height: 38px; line-height: 38px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;}
+.webgl-content .header {margin-bottom: 5px; height: 60px; line-height: 38px;}
+.webgl-content .header .title {font-family: 'Audiowide', cursive; font-size: 36px;}
+.webgl-content .header .source {float: right; font-family: 'Rajdhani', sans-serif; font-size: 20px; color: #E39B00;}
+.webgl-content .header .source a {float: right; font-family: 'Rajdhani', sans-serif; font-size: 20px; color: #E39B00; text-decoration:none;}
+
+.webgl-content .footer {margin-top: 5px; height: 38px; line-height: 38px;}
 .webgl-content .footer .webgl-logo, .title, .fullscreen {height: 100%; display: inline-block; background: transparent center no-repeat;}
 .webgl-content .footer .webgl-logo {background-image: url('webgl-logo.png'); width: 204px; float: left;}
-.webgl-content .footer .title {margin-right: 10px; float: right;}
+.webgl-content .footer .fullscreen-guide {margin-right: 10px; float: right; font-family: 'Rajdhani', sans-serif; font-size: 20px;}
 .webgl-content .footer .fullscreen {background-image: url('fullscreen.png'); width: 38px; float: right;}
