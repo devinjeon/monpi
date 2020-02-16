@@ -1,0 +1,12 @@
+{
+"companyName": "Devin",
+"productName": "Monpi",
+"dataUrl": "monpi-0.1.1.data.unityweb",
+"wasmCodeUrl": "monpi-0.1.1.wasm.code.unityweb",
+"wasmFrameworkUrl": "monpi-0.1.1.wasm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}
