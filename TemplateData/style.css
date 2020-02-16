@@ -13,10 +13,10 @@ body {background-color: #231F20; color: #E6E6E6;}
 .webgl-content .progress.Dark .empty {background-image: url('progressEmpty.Dark.png');}
 .webgl-content .progress.Dark .full {background-image: url('progressFull.Dark.png');}
 
-.webgl-content .header {margin-bottom: 5px; height: 60px; line-height: 38px;}
-.webgl-content .header .title {font-family: 'Audiowide', cursive; font-size: 36px;}
-.webgl-content .header .source {float: right; font-family: 'Rajdhani', sans-serif; font-size: 20px; color: #E39B00;}
-.webgl-content .header .source a {float: right; font-family: 'Rajdhani', sans-serif; font-size: 20px; color: #E39B00; text-decoration:none;}
+.webgl-content .header {margin-bottom: 5px; height: 36px; width: 100%;}
+.webgl-content .header .title {font-family: 'Audiowide', cursive; font-size: 36px; line-height: 36px;}
+.webgl-content .header .source {display: inline-block; position: relative; bottom: 0;}
+.webgl-content .header .source a {font-family: 'Rajdhani', sans-serif; font-size: 20px; color: #E39B00; text-decoration:none;}
 
 .webgl-content .footer {margin-top: 5px; height: 38px; line-height: 38px;}
 .webgl-content .footer .webgl-logo, .title, .fullscreen {height: 100%; display: inline-block; background: transparent center no-repeat;}
