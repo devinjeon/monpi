@@ -26,9 +26,24 @@ public class GameController : MonoBehaviour
     public Canvas gameOverGUI;
     public Canvas gameStatusGUI;
     public Canvas mainEntryGUI;
+
+    // Locker for user input
+    private bool isUserInputLocked;
+    public bool IsUserInputLocked
+    {
+        get { return isUserInputLocked; }
+    }
+    public void LockUserInput()
+    {
+        isUserInputLocked = true;
+    }
+    public void UnLockUserInput()
+    {
+        isUserInputLocked = false;
+    }
+
     private int highestScore = 0;
 
-    private bool isLocked;
     public BonusTimeController bonusTimeController;
 
     void Awake()
@@ -218,7 +233,7 @@ public class GameController : MonoBehaviour
 
     public void ResetGame()
     {
-        Lock();
+        LockUserInput();
         DestroyEnemies();
         GameObject[] safezones = GameObject.FindGameObjectsWithTag("SafeZone");
         foreach (GameObject safezone in safezones)
@@ -245,18 +260,5 @@ public class GameController : MonoBehaviour
     {
         mainEntryGUI.enabled = false;
         ResetGame();
-    }
-    public void Lock()
-    {
-        isLocked = true;
-    }
-    public void UnLock()
-    {
-        isLocked = false;
-    }
-
-    public bool GetStatusIsLocked()
-    {
-        return isLocked;
     }
 }

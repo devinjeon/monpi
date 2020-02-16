@@ -32,15 +32,15 @@ public class PlayerController : MonoBehaviour
         newPosition = transform.position;
         newCameraPosition = Camera.main.transform.position;
         isMoving = false;
-        gameController.Lock();
         canCollide = false;
+        gameController.LockUserInput();
 
         speed = 0;
     }
 
     void Update()
     {
-        if (gameController.GetStatusIsLocked() == false && Input.GetMouseButtonDown(RIGHT_MOUSE_BUTTON))
+        if (gameController.IsUserInputLocked == false && Input.GetMouseButtonDown(RIGHT_MOUSE_BUTTON))
         {
             SetNewPosition();
             // Create Mouse effect
@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
         if (cameraPosition != newCameraPosition)
         {
             float speedWeight = 1;
-            if (gameController.GetStatusIsLocked() == true)
+            if (gameController.IsUserInputLocked == true)
                 speedWeight = 1 + 50f * (cameraPosition.z / 800f);
             float cameraSpeed = maxSpeed * Time.deltaTime * speedWeight;
 
@@ -96,8 +96,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (gameController.GetStatusIsLocked() == true)
-                gameController.UnLock();
+            if (gameController.IsUserInputLocked == true)
+                gameController.UnLockUserInput();
         }
     }
 
@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviour
             other == gameController.GetCurrentEndZoneCollider())
         {
             gameController.ClearStage();
-            gameController.Lock();
+            gameController.LockUserInput();
             SetPositionAtClearTime();
         }
 
