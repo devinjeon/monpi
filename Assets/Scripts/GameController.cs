@@ -149,7 +149,7 @@ public class GameController : MonoBehaviour
     {
         for (int i = 0; i < number; i++)
         {
-            Enemy m = monster.GetComponent<Enemy>();
+            Monster m = monster.GetComponent<Monster>();
             Vector3 spawnPosition = new Vector3(
                 Random.Range(m.minX, m.maxX),
                 0,
