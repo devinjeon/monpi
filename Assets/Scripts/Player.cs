@@ -53,7 +53,6 @@ public class Player : MonoBehaviour
         if (isMoving == true)
             Move();
 
-
         newCameraPosition = GetNewCameraPosition(transform.position);
         MoveCamera();
     }

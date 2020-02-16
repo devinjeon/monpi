@@ -68,13 +68,34 @@ public class GameController : MonoBehaviour
     public UnityEngine.UI.Text finalScoreText;
     public UnityEngine.UI.Text highestScoreText;
 
+    // Google Analytics
+    public GoogleAnalyticsV4 googleAnalytics;
+    private int playCount = 0;
+
+    public void gaEvent(string viewName, string action)
+    {
+        googleAnalytics.LogEvent(new EventHitBuilder()
+            .SetEventCategory(viewName)
+            .SetEventAction(viewName + "/" + action));
+    }
+
+    public void gaEvent(string viewName, string action, int num)
+    {
+        googleAnalytics.LogEvent(new EventHitBuilder()
+            .SetEventCategory(viewName)
+            .SetEventAction(viewName + "/" + action)
+            .SetEventValue(num));
+    }
+
     void Start()
     {
         ShowGameOverUI(false);
         ShowInGameUI(false);
 
-        // MainEntry GUI
+        // MainEntry UI
         mainEntryUI.enabled = true;
+
+        gaEvent("MainEntry", "MainEntryShown");
     }
 
     private void ShowGameOverUI(bool show)
@@ -128,6 +149,8 @@ public class GameController : MonoBehaviour
         bonusTimeController.Reset(bonusTimesForEachStage[currentStage - 1]);
 
         SpawnMonsters(monstersForEachStage[currentStage - 1], monsterNumbersForEachStage[currentStage - 1]);
+
+        gaEvent("InGame", "StartedNewStage" + currentStage);
     }
 
     private void DestroyMonsters()
@@ -188,14 +211,24 @@ public class GameController : MonoBehaviour
         {
             highestScore = currentScore;
             highestScoreText.text = highestScore.ToString();
+            gaEvent("GameOver", "RenewedHighestScore", highestScore);
         }
     }
 
     public void GameOver(bool isCleared)
     {
+        if (isCleared)
+        {
+            gaEvent("GameOver", "AllCleared", currentScore);
+        }
+        else
+        {
+            gaEvent("GameOver", "WasDefeatedAtStage" + currentStage, currentScore);
+        }
+
         bonusTimeController.StopCountDown();
         UpdateFinalScore();
-        gameOverTitle.enabled = !isCleared;
+        
         clearTitle.enabled = isCleared;
         gameOverUI.enabled = true;
     }
@@ -210,6 +243,7 @@ public class GameController : MonoBehaviour
             AddScore(CalculateBonusScore(remainingTime));
             UpdateScoreText();
             StartNewStage();
+            gaEvent("InGame", "ClearedStage" + currentStage, currentScore);
         }
         else
             GameOver(true);
@@ -234,9 +268,12 @@ public class GameController : MonoBehaviour
         GameObject player = Instantiate(playerPrefab,
                                     playerStartPosition,
                                     Quaternion.identity);
+        playCount += 1;
 
         ShowGameOverUI(false);
         ShowInGameUI(true);
+
+        gaEvent("-", "GameStarted", playCount);
     }
 
     public void StartGame()
