@@ -9,13 +9,12 @@ public class PlayerController : MonoBehaviour
     public GameObject mouseClickEffect;
     private const int RIGHT_MOUSE_BUTTON = 1;
     private bool isMoving;
-    public float maxSpeed;
     public float acceleration;
-    private float speed = 0; // player speed
+    public float maxSpeed;
+    private float speed = 0; // current speed
     private Vector3 newPosition; // destination point
     private Vector3 newCameraPosition;
     public float cameraMinX, cameraMaxX, cameraMinZ, cameraMaxZ;
-    public float startZ;
     private Quaternion newRotation;
     private bool canCollide;
     public bool CanCollide
@@ -59,11 +58,6 @@ public class PlayerController : MonoBehaviour
         MoveCamera();
     }
 
-    void FixedUpdate()
-    {
-        
-    }
-
     void SetNewPosition()
     {
         // Change 3D mouse point to plane point(like 2D)
@@ -78,7 +72,7 @@ public class PlayerController : MonoBehaviour
         isMoving = true;
     }
 
-    void MoveCamera()
+    private void MoveCamera()
     {
         Vector3 cameraPosition = Camera.main.transform.position;
         if (cameraPosition != newCameraPosition)
@@ -114,7 +108,7 @@ public class PlayerController : MonoBehaviour
             speed * Time.deltaTime // Distance
         );
 
-        // Stop moving if player arrived at the newPosition
+        // Stop moving if player arrived at the new position
         if (transform.position == newPosition)
         {
             isMoving = false;
@@ -122,19 +116,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    Vector3 GetNewCameraPosition(Vector3 position)
+    private Vector3 GetNewCameraPosition(Vector3 position)
     {
         // Get the new position of the main camera from the player position
         float newX, newZ;
         newX = position.x;
         newZ = position.z;
 
-        float currentStageMinZ = 100f * (gameController.GetCurrentStage() - 1)
-            - gameController.safeZoneObj.transform.localScale.z + cameraMinZ;
-        if (gameController.GetCurrentStage() == 1)
+        float currentStageMinZ = 100f * (gameController.CurrentStage - 1)
+            - gameController.safeZone.transform.localScale.z + cameraMinZ;
+        if (gameController.CurrentStage == 1)
             currentStageMinZ = cameraMinZ;
 
-        float currentStageMaxZ = 100f * (gameController.GetCurrentStage()) - cameraMinZ;
+        float currentStageMaxZ = 100f * (gameController.CurrentStage) - cameraMinZ;
 
         if (newX < cameraMinX)
             newX = cameraMinX;
@@ -148,9 +142,9 @@ public class PlayerController : MonoBehaviour
         return new Vector3(newX, 10, newZ);
     }
 
-    void SetPositionAtClearTime()
+    private void SetPositionAtClearTime()
     {
-        Vector3 startSafeZonePosition = gameController.GetCurrentStartZoneCollider().gameObject.transform.position;
+        Vector3 startSafeZonePosition = gameController.StartZoneCollider.gameObject.transform.position;
         newPosition = new Vector3(startSafeZonePosition.x, 0, startSafeZonePosition.z);
     }
 
@@ -158,7 +152,7 @@ public class PlayerController : MonoBehaviour
     {
         // No collision within a safezone
         if (other.tag == "SafeZone" &&
-            other == gameController.GetCurrentEndZoneCollider())
+            other == gameController.EndZoneCollider)
         {
             gameController.ClearStage();
             gameController.LockUserInput();
@@ -184,7 +178,7 @@ public class PlayerController : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         if (other.tag == "SafeZone" &&
-            other == gameController.GetCurrentStartZoneCollider())
+            other == gameController.StartZoneCollider)
         {
             bonusTimeController.StartCountDown();
             canCollide = true;

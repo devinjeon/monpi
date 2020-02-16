@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject explosion;
+    public GameObject explosionEffect;
     private GameController gameController;
     public float minMoveDistance;
     public float maxMoveDistance;
@@ -22,6 +22,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        // Only for cube prefab
         if (isRotating == true)
         {
             GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * 5;
@@ -53,17 +54,18 @@ public class Enemy : MonoBehaviour
         float newX, newZ;
         Vector3 curPos = transform.position;
 
-        // get new Random X point
+        // Set new Random X point
         randomDistance = Random.Range(minMoveDistance, maxMoveDistance) * PickPlusOrMinusByRandom();
         newX = curPos.x + randomDistance;
         if (newX < minX || newX > maxX)
             newX = curPos.x - randomDistance;
 
-        // get new Random X point
+        // Set new Random Z point
         randomDistance = Random.Range(minMoveDistance, maxMoveDistance) * PickPlusOrMinusByRandom();
         newZ = curPos.z + randomDistance;
         if (newZ < minZ || newZ > maxZ)
             newZ = curPos.z - randomDistance;
+
         Vector3 newPos = new Vector3(newX, 0, newZ);
 
         newRotation = Quaternion.LookRotation(newPos - transform.position);
@@ -94,7 +96,6 @@ public class Enemy : MonoBehaviour
             if (transform.position == newPosition)
             {
                 isStopped = true;
-                // set newDestination after wait random time
                 pauseTime = Random.Range(minStopTime, maxStopTime);
                 StartCoroutine(WaitAndSetNewPosition(pauseTime));
             }

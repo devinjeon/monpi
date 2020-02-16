@@ -4,28 +4,34 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public GameObject playerPrefab;
-    public GameObject player;
-    public Vector3 playerStartPosition;
-    public List<GameObject> enemyList;
-    public List<int> enemyCountList;
-    public List<float> stageLimitTimeList;
-    public List<int> stageScoreList;
+    // Status
+    private int currentScore = 0;
     private int currentStage = 0;
+    public int CurrentStage
+    {
+        get { return currentStage; }
+    }
+
+    // Objects for each stage
+    public List<int> monsterNumbersForEachStage;
+    public List<float> bonusTimesForEachStage;
+    public List<int> baseScoresForEachStage;
+    public List<GameObject> monstersForEachStage;
     private GameObject endZone;
+    public Collider EndZoneCollider
+    {
+        get { return endZone.GetComponent<Collider>(); }
+    }
     private GameObject startZone;
-    public GameObject safeZoneObj;
-    public int currentScore = 0;
-    private UnityEngine.UI.Text scorePrefix;
-    private UnityEngine.UI.Text scoreText;
-    private UnityEngine.UI.Text stageText;
-    private UnityEngine.UI.Text gameOverTitle;
-    private UnityEngine.UI.Text clearTitle;
-    private UnityEngine.UI.Text timeTitle;
-    private UnityEngine.UI.Text timeText;
-    public Canvas gameOverGUI;
-    public Canvas gameStatusGUI;
-    public Canvas mainEntryGUI;
+    public Collider StartZoneCollider
+    {
+        get { return startZone.GetComponent<Collider>(); }
+    }
+    public GameObject safeZone;
+
+    // Player
+    public GameObject playerPrefab;
+    public Vector3 playerStartPosition;
 
     // Locker for user input
     private bool isUserInputLocked;
@@ -42,9 +48,25 @@ public class GameController : MonoBehaviour
         isUserInputLocked = false;
     }
 
+    // UI for the main entry
+    public Canvas mainEntryUI;
     private int highestScore = 0;
 
+    // UI for in-game
+    public Canvas inGameUI;
     public BonusTimeController bonusTimeController;
+    public UnityEngine.UI.Text stageText;
+    public UnityEngine.UI.Text scorePrefix;
+    public UnityEngine.UI.Text scoreText;
+    public UnityEngine.UI.Text timeText;
+    public UnityEngine.UI.Text timeTitle;
+
+    // UI for game over or all clear
+    public Canvas gameOverUI;
+    public UnityEngine.UI.Text gameOverTitle;
+    public UnityEngine.UI.Text clearTitle;
+    public UnityEngine.UI.Text finalScoreText;
+    public UnityEngine.UI.Text highestScoreText;
 
     void Awake()
     {
@@ -53,40 +75,23 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        // GameStatus GUI
-        stageText = GameObject.FindGameObjectWithTag("StageText").
-            GetComponent<UnityEngine.UI.Text>();
-        scorePrefix = GameObject.FindGameObjectWithTag("ScorePrefix").
-            GetComponent<UnityEngine.UI.Text>();
-        scoreText = GameObject.FindGameObjectWithTag("ScoreText").
-            GetComponent<UnityEngine.UI.Text>();
-        timeText = GameObject.FindGameObjectWithTag("TimeText").
-            GetComponent<UnityEngine.UI.Text>();
-        timeTitle = GameObject.FindGameObjectWithTag("TimeTitle").
-            GetComponent<UnityEngine.UI.Text>();
-        // GameOver GUI
-        gameOverTitle = GameObject.FindGameObjectWithTag("GameOverTitle").
-            GetComponent<UnityEngine.UI.Text>();
-        clearTitle = GameObject.FindGameObjectWithTag("ClearTitle").
-            GetComponent<UnityEngine.UI.Text>();
+        ShowGameOverUI(false);
+        ShowInGameUI(false);
 
         // MainEntry GUI
-        mainEntryGUI.enabled = true;
-
-        HideAllGameOverGUI();
-        SetAllGameStatusGUI(false);
+        mainEntryUI.enabled = true;
     }
 
-    private void HideAllGameOverGUI()
+    private void ShowGameOverUI(bool show)
     {
-        gameOverTitle.enabled = false;
-        clearTitle.enabled = false;
-        gameOverGUI.enabled = false;
+        gameOverTitle.enabled = show;
+        clearTitle.enabled = show;
+        gameOverUI.enabled = show;
     }
 
-    private void SetAllGameStatusGUI(bool show)
+    private void ShowInGameUI(bool show)
     {
-        gameStatusGUI.enabled = show;
+        inGameUI.enabled = show;
         stageText.enabled = show;
         scorePrefix.enabled = show;
         scoreText.enabled = show;
@@ -95,28 +100,18 @@ public class GameController : MonoBehaviour
         timeTitle.enabled = show;
     }
 
-    GameObject CreateSafeZone()
+    private GameObject CreateSafeZone()
     {
-        float radius = safeZoneObj.transform.localScale.z / 2f;
+        float radius = this.safeZone.transform.localScale.z / 2f;
         float z;
         if (currentStage == 0)
             z = radius;
         else
             z = 100 * currentStage - radius;
-        GameObject safeZone = Instantiate(safeZoneObj,
+        GameObject safeZone = Instantiate(this.safeZone,
             new Vector3(0f, -3.5f, z),
             Quaternion.identity) as GameObject;
         return safeZone;
-    }
-
-    public Collider GetCurrentEndZoneCollider()
-    {
-        return endZone.GetComponent<Collider>();
-    }
-
-    public Collider GetCurrentStartZoneCollider()
-    {
-        return startZone.GetComponent<Collider>();
     }
 
     void StartNewStage()
@@ -128,52 +123,50 @@ public class GameController : MonoBehaviour
             Destroy(startZone);
             startZone = endZone;
         }
+        DestroyMonsters();
 
-        DestroyEnemies();
         currentStage += 1;
         UpdateStageText();
 
         endZone = CreateSafeZone();
 
-        for (int i = 0; i < enemyCountList[currentStage - 1]; i++)
-            SpawnOneEnemy(enemyList[currentStage - 1]);
         bonusTimeController.Reset(bonusTimesForEachStage[currentStage - 1]);
+
+        SpawnMonsters(monstersForEachStage[currentStage - 1], monsterNumbersForEachStage[currentStage - 1]);
     }
 
-    private void DestroyEnemies()
+    private void DestroyMonsters()
     {
         if (currentStage == 0)
             return;
-        string enemyTag = string.Format("Stage{0}Enemy", currentStage);
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
-        foreach (GameObject enemy in enemies)
-            Destroy(enemy);
+        string tag = string.Format("MonsterOnStage{0}", currentStage);
+        GameObject[] monsters = GameObject.FindGameObjectsWithTag(tag);
+        foreach (GameObject m in monsters)
+            Destroy(m);
     }
 
-    private void SpawnOneEnemy(GameObject enemy)
+    private void SpawnMonsters(GameObject monster, int number)
     {
-        Enemy moveInfo = enemy.GetComponent<Enemy>();
-        Vector3 spawnPosition = new Vector3(
-            Random.Range(moveInfo.minX, moveInfo.maxX),
-            0,
-            Random.Range(moveInfo.minZ, moveInfo.maxZ)
-        );
+        for (int i = 0; i < number; i++)
+        {
+            Enemy m = monster.GetComponent<Enemy>();
+            Vector3 spawnPosition = new Vector3(
+                Random.Range(m.minX, m.maxX),
+                0,
+                Random.Range(m.minZ, m.maxZ)
+            );
 
-        // rotation default = none
-        Quaternion spawnRotation = Quaternion.identity;
-        Instantiate(enemy, spawnPosition, spawnRotation);
+            // Rotation default = none
+            Quaternion spawnRotation = Quaternion.identity;
+            Instantiate(monster, spawnPosition, spawnRotation);
+        }
     }
 
-    public int GetCurrentStage()
-    {
-        return currentStage;
-    }
-
-    private int GetBonusScore(float playTime)
+    private int CalculateBonusScore(float playTime)
     {
         float remainingTime = bonusTimeController.GetTimeLeft();
-        float bonusRate = (float)remainingTime / (float)stageLimitTimeList[currentStage - 1];
-        int bonusScore = (int)((float)stageScoreList[currentStage - 1] * bonusRate);
+        float bonusRate = (float)remainingTime / (float)bonusTimesForEachStage[currentStage - 1];
+        int bonusScore = (int)((float)baseScoresForEachStage[currentStage - 1] * bonusRate);
         return bonusScore;
     }
 
@@ -192,17 +185,13 @@ public class GameController : MonoBehaviour
         stageText.text = "Stage " + currentStage;
     }
 
-    public void UpdateFinalScore()
+    private void UpdateFinalScore()
     {
-        UnityEngine.UI.Text currentScoreText = GameObject.FindGameObjectWithTag("CurrentScore")
-                    .GetComponent<UnityEngine.UI.Text>();
-        currentScoreText.text = currentScore.ToString();
+        finalScoreText.text = currentScore.ToString();
 
         if (currentScore >= highestScore)
         {
             highestScore = currentScore;
-            UnityEngine.UI.Text highestScoreText = GameObject.FindGameObjectWithTag("HighestScore")
-                    .GetComponent<UnityEngine.UI.Text>();
             highestScoreText.text = highestScore.ToString();
         }
     }
@@ -213,17 +202,17 @@ public class GameController : MonoBehaviour
         UpdateFinalScore();
         gameOverTitle.enabled = !isCleared;
         clearTitle.enabled = isCleared;
-        gameOverGUI.enabled = true;
+        gameOverUI.enabled = true;
     }
 
     public void ClearStage()
     {
-        if (currentStage < enemyList.Count)
+        if (currentStage < monstersForEachStage.Count)
         {
             bonusTimeController.StopCountDown();
             float remainingTime = bonusTimeController.GetTimeLeft();
-            AddScore(stageScoreList[currentStage - 1]);
-            AddScore(GetBonusScore(remainingTime));
+            AddScore(baseScoresForEachStage[currentStage - 1]);
+            AddScore(CalculateBonusScore(remainingTime));
             UpdateScoreText();
             StartNewStage();
         }
@@ -234,7 +223,7 @@ public class GameController : MonoBehaviour
     public void ResetGame()
     {
         LockUserInput();
-        DestroyEnemies();
+        DestroyMonsters();
         GameObject[] safezones = GameObject.FindGameObjectsWithTag("SafeZone");
         foreach (GameObject safezone in safezones)
             Destroy(safezone);
@@ -247,18 +236,17 @@ public class GameController : MonoBehaviour
         currentStage = 0;
         StartNewStage();
 
-        player = Instantiate(playerPrefab,
-                playerStartPosition,
-                Quaternion.identity
-        );
+        GameObject player = Instantiate(playerPrefab,
+                                    playerStartPosition,
+                                    Quaternion.identity);
 
-        HideAllGameOverGUI();
-        SetAllGameStatusGUI(true);
+        ShowGameOverUI(false);
+        ShowInGameUI(true);
     }
 
     public void StartGame()
     {
-        mainEntryGUI.enabled = false;
+        mainEntryUI.enabled = false;
         ResetGame();
     }
 }
