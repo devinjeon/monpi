@@ -107,7 +107,7 @@ public class Enemy : MonoBehaviour
         if (other.tag != "Player")
             return;
 
-        bool canCollide = other.GetComponent<PlayerController>().CanCollide;
+        bool canCollide = other.GetComponent<Player>().CanCollide;
         if (canCollide == true) {
             Instantiate(explosionEffect,
                     gameObject.transform.position,
