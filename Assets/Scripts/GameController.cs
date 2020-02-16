@@ -68,11 +68,6 @@ public class GameController : MonoBehaviour
     public UnityEngine.UI.Text finalScoreText;
     public UnityEngine.UI.Text highestScoreText;
 
-    void Awake()
-    {
-        Screen.SetResolution(512, 512, false);
-    }
-
     void Start()
     {
         ShowGameOverUI(false);
