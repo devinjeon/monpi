@@ -23,7 +23,7 @@ At that time, I had never experienced something like game design, game developme
 
 This is the list of the assets I used.
 
-Due to the possibility of license issues, I didn't upload any asset into github.
+Due to the possibility of license issues, I didn't upload any asset into GitHub.
 (I only submitted a commit including my own codes and the build outputs)
 
 ### Unity assets
